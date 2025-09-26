@@ -1,7 +1,7 @@
 {
   "name": "senpaicli",
   "version": "1.0.0",
-  "description": "",
+  "description": "Herramienta CLI para descargar y convertir mangas fácilmente desde distintas fuentes.",
   "main": "index.js",
   "type": "module",
   "scripts": {
@@ -10,8 +10,14 @@
   "bin": {
     "senpaidl": "./bin/senpaidl.js"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": [
+    "manga",
+    "download",
+    "cli",
+    "senpaicli",
+    "senpaidl"
+  ],
+  "author": "roanhjs",
   "license": "ISC",
   "packageManager": "pnpm@10.17.0",
   "dependencies": {
