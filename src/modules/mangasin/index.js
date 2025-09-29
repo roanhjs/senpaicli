@@ -2,6 +2,7 @@ import fs from "node:fs";
 import pdfkit from "pdfkit";
 import { chromium } from "playwright";
 import chalk from "chalk";
+import ora from "ora";
 import { configPath } from "../../setup.js";
 import { webpToJpg } from "../../utils/webpToJpg.js";
 
@@ -9,6 +10,12 @@ export default {
   name: "mangasin",
   execute: async ({ url }) => {
     try {
+      console.clear();
+      const spinner = ora({
+        text: `Descargando...`,
+        spinner: "line",
+      }).start();
+
       const config = JSON.parse(fs.readFileSync(configPath, "utf8"));
       let browser;
       const args = [
@@ -115,9 +122,13 @@ export default {
         pdf.addPage();
       }
       pdf.end();
-      console.log(
-        `${chalk.green("✔")} Descarga completa: ${chalk.cyan(`${config.carpetaDeArchivos.ruta}/${title}.pdf`)}`,
+      // console.log(
+      //   `${chalk.green("✔")} Descarga completa: ${chalk.cyan(`${config.carpetaDeArchivos.ruta}/${title}.pdf`)}`,
+      // );
+      spinner.succeed(
+        `Descarga completada: ${chalk.cyan(`${config.carpetaDeArchivos.ruta}/${title}.pdf`)}`,
       );
+      spinner.stop();
     } catch (err) {
       console.error("Error en dlMangaIn:", err);
       return { title: "", imgs: [] };
