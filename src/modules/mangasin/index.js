@@ -1,4 +1,5 @@
 import fs from "node:fs";
+import { PassThrough } from "node:stream";
 import pdfkit from "pdfkit";
 import { chromium } from "playwright";
 import chalk from "chalk";
@@ -6,16 +7,13 @@ import ora from "ora";
 import { configPath } from "../../setup.js";
 import { webpToJpg } from "../../utils/webpToJpg.js";
 
+console.clear();
+let spinner = ora(chalk.white("Iniciando descarga")).start();
+
 export default {
   name: "mangasin",
   execute: async ({ url }) => {
     try {
-      console.clear();
-      const spinner = ora({
-        text: `Descargando...`,
-        spinner: "line",
-      }).start();
-
       const config = JSON.parse(fs.readFileSync(configPath, "utf8"));
       let browser;
       const args = [
@@ -47,11 +45,9 @@ export default {
         "--disable-accelerated-mjpeg-decode",
       ];
 
+      spinner.text = "Abriendo navegador";
       if (config.navegador.ruta === "Default") {
-        browser = await chromium.launch({
-          headless: true,
-          args,
-        });
+        browser = await chromium.launch({ headless: true, args });
       } else {
         browser = await chromium.launch({
           executablePath: config.navegador.ruta,
@@ -61,15 +57,15 @@ export default {
       }
 
       const context = await browser.newContext();
-
       const page = await context.newPage();
       const timeout = 180000;
 
+      spinner.text = "Cargando página";
       await page.goto(url, { waitUntil: "load", timeout });
-
       await page.waitForSelector("body", { timeout });
 
       const title = await page.title();
+      spinner.text = `Obteniendo imágenes`;
 
       const modeAll = page.locator("a#modeALL");
       await modeAll.waitFor({ state: "visible", timeout });
@@ -84,17 +80,31 @@ export default {
           const src =
             (await img.getAttribute("data-src")) ||
             (await img.getAttribute("src"));
-          if (src) return src;
-          return null;
+          return src || null;
         }),
       );
 
+      spinner.text = "Cerrando navegador";
       await browser.close();
 
+      const nameManga = url.split("/")[4];
+      const dirManga = `${config.carpetaDeArchivos.ruta}/${nameManga}`;
+      spinner.text = `Creando carpeta: ${dirManga}`;
+      fs.mkdirSync(dirManga, { recursive: true });
+
+      spinner.text = "Generando PDF";
       const pdf = new pdfkit();
-      pdf.pipe(
-        fs.createWriteStream(`${config.carpetaDeArchivos.ruta}/${title}.pdf`),
-      );
+      const stream = fs.createWriteStream(`${dirManga}/${title}.pdf`);
+
+      const pass = new PassThrough();
+      let bytes = 0;
+
+      pass.on("data", (chunk) => {
+        bytes += chunk.length;
+        spinner.text = `Procesando PDF ${(bytes / (1024 * 1024)).toFixed(2)} MB`;
+      });
+
+      pdf.pipe(pass).pipe(stream);
 
       for (const img of imgs) {
         const res = await fetch(img, {
@@ -122,15 +132,12 @@ export default {
         pdf.addPage();
       }
       pdf.end();
-      // console.log(
-      //   `${chalk.green("✔")} Descarga completa: ${chalk.cyan(`${config.carpetaDeArchivos.ruta}/${title}.pdf`)}`,
-      // );
+
       spinner.succeed(
         `Descarga completada: ${chalk.cyan(`${config.carpetaDeArchivos.ruta}/${title}.pdf`)}`,
       );
-      spinner.stop();
     } catch (err) {
-      console.error("Error en dlMangaIn:", err);
+      spinner.fail(`Error: ${err.message}`);
       return { title: "", imgs: [] };
     }
   },
