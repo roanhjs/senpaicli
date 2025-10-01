@@ -1,6 +1,6 @@
 {
   "name": "senpaicli",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Herramienta CLI para descargar y convertir mangas fácilmente desde distintas fuentes.",
   "repository": {
     "type": "git",
