@@ -1,34 +1,38 @@
 # Senpaicli
 
-**Senpaicli** es una herramienta de línea de comandos (CLI) para descargar y convertir mangas a PDF fácilmente desde distintas fuentes. Por ahora, soporta el módulo `mangasin`.
+**Senpaicli** is a command-line interface (CLI) tool to easily download and convert manga into PDF from different sources. Currently, it supports the `mangasin` module.
 
-## Requerimientos
+## Translations
+- [Español](./docs/README.es.md)
+
+## Requirements
 
 > [!IMPORTANT]
-> Necesitas tener instalados:
+> You need to have installed:
 > - [Node.js](https://nodejs.org/)
-> - [npm](https://www.npmjs.com/) o [pnpm](https://pnpm.io/)
+> - [npm](https://www.npmjs.com/) or [pnpm](https://pnpm.io/)
 
 > [!TIP]
-Puedes usar [Volta](https://volta.sh/) para administrar todo en uno: Node.js, npm/pnpm y versiones de paquetes de forma sencilla.
+You can use [Volta](https://volta.sh/) to manage everything in one place: Node.js, npm/pnpm, and package versions easily.
 
-## Instalación
+## Installation
 ```bash
 npm i -g senpaicli
 ```
 
-## Uso
-senpaidl `<módulo>` `<URL>`
+## Usage
+senpaidl `<module>` `<URL>`
 
-## Ejemplo:
+## Example:
 ```bash
 senpaidl mangasin https://m440.in/manga/super-no-ura-de-yani-suu-hanashi/1-ea0z4/1
 ```
 
-## Módulos Disponibles
+## Available Modules
 - `mangasin`
 
 ## Disclaimer
 > [!IMPORTANT]
-> Este proyecto es sin fines de lucro.
-> No estoy afiliado a ninguna de las webs involucradas. Esta herramienta solo automatiza procesos de descarga y conversión, y no promueve ni apoya ninguna acción ilegal o no autorizada de los sitios web mencionados.
+> This project is non-profit.
+> I am not affiliated with any of the websites involved.
+> This tool only automates downloading and conversion processes, and does not promote or support any illegal or unauthorized actions from the mentioned websites.
