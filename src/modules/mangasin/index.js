@@ -7,13 +7,14 @@ import ora from "ora";
 import { configPath } from "../../setup.js";
 import { webpToJpg } from "../../utils/webpToJpg.js";
 
-console.clear();
-let spinner = ora(chalk.white("Iniciando descarga")).start();
+let spinner;
 
 export default {
   name: "mangasin",
   execute: async ({ url }) => {
     try {
+      console.clear();
+      spinner = ora(chalk.white("Iniciando descarga")).start();
       const config = JSON.parse(fs.readFileSync(configPath, "utf8"));
       let browser;
       const args = [

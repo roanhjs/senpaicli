@@ -5,5 +5,5 @@ export async function main() {
   if (!fs.existsSync(configPath)) {
     await setup();
   }
-  await runCLI(process.argv.slice(2));
+  await runCLI();
 }
